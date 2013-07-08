@@ -11,9 +11,7 @@ public class TestConfig {
 	
 	
 	
-	
-	public TestConfig() {
-		// TODO Auto-generated constructor stub
+	public TestConfig() {		
 	}
 
 
@@ -58,6 +56,11 @@ public class TestConfig {
 		this.hasbool = hasbool;
 	}
 	
-	
+	public static void main(String[] args)
+	{
+		String name = "ateat";		
+		name = String.format("%C%s", name.charAt(0), name.length()>1?name.substring(1):"");
+		System.out.println(name);
+	}
 
 }

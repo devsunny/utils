@@ -36,6 +36,13 @@ public @interface CLIOptionBinding
 	 * @return
 	 */
 	String format() default "";
+	
+	
+	boolean hasValue() default false;
+	
+	
+	String description() default "";
+	
 	/**
 	 * The argument list in the end of Posix options;
 	 * @return
