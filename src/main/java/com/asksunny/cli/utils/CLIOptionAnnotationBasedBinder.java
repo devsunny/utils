@@ -11,6 +11,8 @@ import java.util.Date;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
 
@@ -23,6 +25,37 @@ import com.asksunny.cli.utils.annotation.CLIOptionBinding;
  *
  */
 public class CLIOptionAnnotationBasedBinder {
+	
+	
+	public static Options getOptions(Object pojo) throws Exception
+	{
+		Options options = new Options();		
+		Class<? extends Object> clazz = pojo.getClass();
+		Field[] fields = clazz.getDeclaredFields();			
+		for (Field field : fields) {				
+			if (field.isAnnotationPresent(CLIOptionBinding.class))
+			{
+				CLIOptionBinding cliBinding = field
+						.getAnnotation(CLIOptionBinding.class);
+				Option opt = new Option(String.valueOf(cliBinding.shortOption()), cliBinding.longOption(), cliBinding.hasValue(), cliBinding.description());
+				options.addOption(opt);				
+			}
+		}
+		Method[] methods = clazz.getMethods();
+		for (Method method : methods) {
+			if (method.isAnnotationPresent(CLIOptionBinding.class)
+					&& method.getParameterTypes().length == 1) {
+				CLIOptionBinding cliBinding = method
+						.getAnnotation(CLIOptionBinding.class);
+				Option opt = new Option(String.valueOf(cliBinding.shortOption()), cliBinding.longOption(), cliBinding.hasValue(), cliBinding.description());
+				options.addOption(opt);		
+			}
+		}		
+		return options;
+	}
+	
+	
+	
 	public static CommandLine bindPosix(Options options, String[] args,
 			Object pojo) throws CLIOptionBindingException {
 		CommandLineParser parser = new PosixParser();
