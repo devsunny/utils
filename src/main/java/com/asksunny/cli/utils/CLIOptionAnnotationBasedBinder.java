@@ -2,6 +2,7 @@ package com.asksunny.cli.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -27,9 +28,10 @@ import com.asksunny.cli.utils.annotation.CLIOptionBinding;
 public class CLIOptionAnnotationBasedBinder {
 	
 	
-	public static Options getOptions(Object pojo) throws Exception
+	public static Options getOptions(Object pojo) throws CLIOptionBindingException
 	{
 		Options options = new Options();		
+		try{
 		Class<? extends Object> clazz = pojo.getClass();
 		Field[] fields = clazz.getDeclaredFields();			
 		for (Field field : fields) {				
@@ -38,7 +40,8 @@ public class CLIOptionAnnotationBasedBinder {
 				CLIOptionBinding cliBinding = field
 						.getAnnotation(CLIOptionBinding.class);
 				Option opt = new Option(String.valueOf(cliBinding.shortOption()), cliBinding.longOption(), cliBinding.hasValue(), cliBinding.description());
-				options.addOption(opt);				
+				options.addOption(opt);		
+				
 			}
 		}
 		Method[] methods = clazz.getMethods();
@@ -50,7 +53,11 @@ public class CLIOptionAnnotationBasedBinder {
 				Option opt = new Option(String.valueOf(cliBinding.shortOption()), cliBinding.longOption(), cliBinding.hasValue(), cliBinding.description());
 				options.addOption(opt);		
 			}
-		}		
+		}	
+		}catch(Throwable ex){
+			throw new CLIOptionBindingException(
+					"Failed to generate cli option from POJO:" + pojo.toString());
+		}
 		return options;
 	}
 	
@@ -66,12 +73,17 @@ public class CLIOptionAnnotationBasedBinder {
 			Field[] fields = clazz.getDeclaredFields();			
 			for (Field field : fields) {				
 				if (field.isAnnotationPresent(CLIOptionBinding.class)) {
+					
 					if(field.isAccessible()){
+						
 						bindByField( pojo,  cli,  field);
 					}else{
-					  Method m=	getSetter( clazz,  field);
+						
+					Method m=	getSetter( clazz,  field);
+					
 					  if(m!=null){
-						  bindByMethod( pojo,  cli,  m);
+						  bindByMethod( pojo,  cli,  m, field
+									.getAnnotation(CLIOptionBinding.class));
 					  }
 					}
 
@@ -81,12 +93,12 @@ public class CLIOptionAnnotationBasedBinder {
 			for (Method method : methods) {
 				if (method.isAnnotationPresent(CLIOptionBinding.class)
 						&& method.getParameterTypes().length == 1) {
-					 bindByMethod( pojo,  cli,  method);
+					 bindByMethod( pojo,  cli,  method, null);
 				}
 			}
 		} catch (Throwable e) {
 			throw new CLIOptionBindingException(
-					"Failed to bind cli option to POJO:" + pojo.toString());
+					"Failed to bind cli option to POJO:" + pojo.toString(), e);
 		}
 
 		return cli;
@@ -101,9 +113,12 @@ public class CLIOptionAnnotationBasedBinder {
 		Method method = null;
 		try{
 			String setter = String.format("set%s", name);
-			method = clazz.getMethod(setter, new Class[]{field.getType()});		
-			if(method.isAccessible()==false){
+			
+			method = clazz.getMethod(setter, field.getType());	
+			
+			if(method.getModifiers()!=Modifier.PUBLIC){
 				method = null;
+				System.out.println(setter + " >>>" + method);
 			}
 		}catch(Exception ex){
 			method = null;
@@ -147,10 +162,10 @@ public class CLIOptionAnnotationBasedBinder {
 		}
 	}
 	
-	private static void bindByMethod(Object pojo, CommandLine cli, Method method) throws Exception
+	private static void bindByMethod(Object pojo, CommandLine cli, Method method, CLIOptionBinding fieldBinding) throws Exception
 	{
-		CLIOptionBinding cliBinding = method
-				.getAnnotation(CLIOptionBinding.class);
+		CLIOptionBinding cliBinding = (fieldBinding==null)?method
+				.getAnnotation(CLIOptionBinding.class):fieldBinding;		
 		char shortOpt = cliBinding.shortOption();
 		String longOpt = cliBinding.longOption();
 		if (cliBinding.values()) {
