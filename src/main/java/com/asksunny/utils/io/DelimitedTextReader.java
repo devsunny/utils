@@ -21,7 +21,7 @@ public class DelimitedTextReader extends Reader {
 	
 	public DelimitedTextReader(Reader reader) 
 	{
-		this(reader, "\n", "|", true);
+		this(reader, "\n", ",", true);
 	}
 
 	public DelimitedTextReader(Reader reader, String rowDelimiter,
