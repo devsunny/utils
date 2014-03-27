@@ -23,23 +23,6 @@ public class AlphaNumbericMaskUtil {
 		return Long.valueOf(res).longValue();
 	}
 
-	public static String maskDigit(String numberstr) {
-		if (numberstr == null)
-			return null;
-		StringBuffer numstr = new StringBuffer(numberstr);
-		for (int i = 0; i < numstr.length(); i++) {
-			char d = numstr.charAt(i);
-			int x = d - 48;
-			if (d < 48 || d > 57) {
-				;
-			} else {
-				int[] t = AsciiCodec.NUMERIC_MASKS[i];
-				numstr.setCharAt(i, (char) (t[x] + 48));
-			}
-		}
-		return numstr.toString();
-	}
-
 	public static int unmaskDigit(int masked) {
 
 		String intStr = unmaskDigit(Integer.toString(masked));
@@ -57,6 +40,24 @@ public class AlphaNumbericMaskUtil {
 		return Long.valueOf(intStr);
 	}
 
+	public static String maskDigit(String numberstr) {
+		if (numberstr == null)
+			return null;
+		StringBuffer numstr = new StringBuffer(numberstr);
+		for (int i = 0; i < numstr.length(); i++) {
+			char d = numstr.charAt(i);
+			int x = d - 48;
+			if (d < 48 || d > 57) {
+				;
+			} else {
+				int pi = i % AsciiCodec.NUMERIC_MASKS.length;
+				int[] t = AsciiCodec.NUMERIC_MASKS[pi];
+				numstr.setCharAt(i, (char) (t[x] + 48));
+			}
+		}
+		return numstr.toString();
+	}
+
 	public static String unmaskDigit(String masked) {
 		if (masked == null)
 			return null;
@@ -67,7 +68,8 @@ public class AlphaNumbericMaskUtil {
 			if (d < 48 || d > 57) {
 				;
 			} else {
-				int[] t = AsciiCodec.NUMERIC_MASKS[i];
+				int pi = i % AsciiCodec.NUMERIC_MASKS.length;
+				int[] t = AsciiCodec.NUMERIC_MASKS[pi];
 				int j = 0;
 				for (j = 0; j < t.length; j++) {
 					if (t[j] == x)
@@ -86,7 +88,7 @@ public class AlphaNumbericMaskUtil {
 		for (int i = 0; i < numstr.length(); i++) {
 			char d = numstr.charAt(i);
 			if (d < 256) {
-				int pi = i % 12;
+				int pi = i % AsciiCodec.EXT_ASCII_TABLES.length;
 				numstr.setCharAt(i, ((char) AsciiCodec.EXT_ASCII_TABLES[pi][d]));
 			}
 		}
@@ -100,7 +102,7 @@ public class AlphaNumbericMaskUtil {
 		for (int i = 0; i < numstr.length(); i++) {
 			int d = numstr.charAt(i);
 			if (d < 256) {
-				int pi = i % 12;
+				int pi = i % AsciiCodec.EXT_ASCII_TABLES.length;
 				int x = AsciiReverseCodec.ASCII_LOOKUP_HASHS.get(pi).get(
 						Integer.valueOf(d));
 				numstr.setCharAt(i, ((char) x));
@@ -117,7 +119,7 @@ public class AlphaNumbericMaskUtil {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String masked = maskAscii("LLLLLLLL");
+		String masked = maskAscii("Sunny Liu");
 		System.out.println(masked);
 		System.out.println(unmaskAscii(masked));
 	}

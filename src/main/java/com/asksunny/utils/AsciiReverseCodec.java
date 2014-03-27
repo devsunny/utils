@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class AsciiReverseCodec {
 
+	
 	private final static ConcurrentHashMap<Integer, Integer> ASCII_LOOKUP_HASH_0 = new ConcurrentHashMap<Integer, Integer>();
 	private final static ConcurrentHashMap<Integer, Integer> ASCII_LOOKUP_HASH_1 = new ConcurrentHashMap<Integer, Integer>();
 	private final static ConcurrentHashMap<Integer, Integer> ASCII_LOOKUP_HASH_2 = new ConcurrentHashMap<Integer, Integer>();
