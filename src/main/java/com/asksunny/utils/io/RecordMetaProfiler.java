@@ -13,16 +13,6 @@ public class RecordMetaProfiler
 	=  Pattern.compile("^((((1|0|2|3)\\d)([/\\-_])((1|0|2|3)\\d)([/\\-_])\\d{4})|(\\d{4}([/\\-_])((1|0|2|3)\\d)([/\\-_])((1|0|2|3)\\d)))([\\-_ ])[0-2]\\d(([:\\-_])[0-5]\\d(([:\\-_])[0-5]\\d)?)?$");
 	
 	
-	public void profile(Record record)
-	{
-		if(fieldMetaDatas==null){
-			fieldMetaDatas = new RecordFieldMetaData[record.size()];
-			for(int i=0; i<record.size(); i++){
-				
-			}
-		}		
-	}	
-	
 	protected void updateMetaData(String value, RecordFieldMetaData md) 
 	{
 		
