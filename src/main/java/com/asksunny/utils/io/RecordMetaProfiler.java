@@ -10,7 +10,7 @@ public class RecordMetaProfiler
 	public final static Pattern  NUMBER_PATTERN = Pattern.compile(NUMBER_PATTERN_REGEX);
 	public final static Pattern  DATE_PATTERN =  Pattern.compile("^(((1|0|2|3)\\d)([/\\-_])((1|0|2|3)\\d)([/\\-_])\\d{4})|(\\d{4}([/\\-_])((1|0|2|3)\\d)([/\\-_])((1|0|2|3)\\d))$");
 	public final static Pattern  TIME_PATTERN	
-	=  Pattern.compile("^((((1|0|2|3)\\d)([/\\-_])((1|0|2|3)\\d)([/\\-_])\\d{4})|(\\d{4}([/\\-_])((1|0|2|3)\\d)([/\\-_])((1|0|2|3)\\d)))([\\-_ ])[0-2]\\d(([:\\-_])[0-5]\\d(([:\\-_])[0-5]\\d)?)?$");
+	=  Pattern.compile("^((((1|0|2|3)\\d)([/\\-_.])((1|0|2|3)\\d)([/\\-_.])\\d{4})|(\\d{4}([/\\-_.])((1|0|2|3)\\d)([/\\-_.])((1|0|2|3)\\d)))([\\-_ .])[0-2]\\d(([:\\-_.])[0-5]\\d(([:\\-_.])[0-5]\\d)?)?$");
 	
 	
 	protected void updateMetaData(String value, RecordFieldMetaData md) 
@@ -81,9 +81,9 @@ public class RecordMetaProfiler
 						}
 					}
 				}			
-				for(int i=1; i<=matcher.groupCount(); i++){
-					System.out.println(i + ":" + matcher.group(i));
-				}
+				//for(int i=1; i<=matcher.groupCount(); i++){
+				//	System.out.println(i + ":" + matcher.group(i));
+				//}
 			}else{				
 				md.setType(RecordFieldMetaData.FIELD_TYPE.STRING);
 				if(md.getMinLength()==0 || md.getMinLength()>str.length()){
