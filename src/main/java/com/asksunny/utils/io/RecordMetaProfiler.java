@@ -34,7 +34,7 @@ public class RecordMetaProfiler {
 			md.setType(RecordFieldMetaData.FIELD_TYPE.DATE);
 		} else {
 			Matcher matcher = NUMBER_PATTERN.matcher(str);
-			if ( md.getType() ==null &&  matcher.find()) {
+			if (md.getType() == null && matcher.find()) {
 				md.setType(RecordFieldMetaData.FIELD_TYPE.NUMBER);
 				if (matcher.group(4) != null) {
 					md.setIsdecimal(true);
@@ -55,14 +55,25 @@ public class RecordMetaProfiler {
 					md.setNegative(true);
 				}
 				if (md.getMinLength() == 0 || md.getMinLength() > str.length()) {
+
 					md.setMinLength(str.length());
+
 				}
 
 				if (md.getMaxLength() == 0 || md.getMaxLength() < str.length()) {
 					md.setMaxLength(str.length());
 				}
 
-				if (md.getDateConfidence() >= 0
+				if (md.getMaxLength() != 0 && md.getMaxLength() != str.length()) {
+					md.setDateConfidence(-1);
+					md.setTimeCofidence(-1);
+					md.setType(RecordFieldMetaData.FIELD_TYPE.NUMBER);
+				} else if (md.getMinLength() != 0
+						&& md.getMinLength() != str.length()) {
+					md.setDateConfidence(-1);
+					md.setTimeCofidence(-1);
+					md.setType(RecordFieldMetaData.FIELD_TYPE.NUMBER);
+				} else if (md.getDateConfidence() >= 0
 						&& md.getMaxLength() == md.getMinLength()
 						&& (md.getMaxLength() == 6 || md.getMaxLength() == 8
 								|| md.getMaxLength() == 10
@@ -91,7 +102,7 @@ public class RecordMetaProfiler {
 				// for(int i=1; i<=matcher.groupCount(); i++){
 				// System.out.println(i + ":" + matcher.group(i));
 				// }
-			} 
+			}
 		}
 	}
 
