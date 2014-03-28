@@ -50,7 +50,7 @@ public class AlphaNumbericMaskUtil {
 			if (d < 48 || d > 57) {
 				;
 			} else {
-				int pi = i % AsciiCodec.NUMERIC_MASKS.length;
+				int pi = (i * i) % AsciiCodec.NUMERIC_MASKS.length;
 				int[] t = AsciiCodec.NUMERIC_MASKS[pi];
 				numstr.setCharAt(i, (char) (t[x] + 48));
 			}
@@ -68,7 +68,7 @@ public class AlphaNumbericMaskUtil {
 			if (d < 48 || d > 57) {
 				;
 			} else {
-				int pi = i % AsciiCodec.NUMERIC_MASKS.length;
+				int pi = (i * i) % AsciiCodec.NUMERIC_MASKS.length;
 				int[] t = AsciiCodec.NUMERIC_MASKS[pi];
 				int j = 0;
 				for (j = 0; j < t.length; j++) {
@@ -88,7 +88,7 @@ public class AlphaNumbericMaskUtil {
 		for (int i = 0; i < numstr.length(); i++) {
 			char d = numstr.charAt(i);
 			if (d < 256) {
-				int pi = i % AsciiCodec.EXT_ASCII_TABLES.length;
+				int pi = (i * i) % AsciiCodec.EXT_ASCII_TABLES.length;
 				numstr.setCharAt(i, ((char) AsciiCodec.EXT_ASCII_TABLES[pi][d]));
 			}
 		}
@@ -102,7 +102,7 @@ public class AlphaNumbericMaskUtil {
 		for (int i = 0; i < numstr.length(); i++) {
 			int d = numstr.charAt(i);
 			if (d < 256) {
-				int pi = i % AsciiCodec.EXT_ASCII_TABLES.length;
+				int pi = (i * i) % AsciiCodec.EXT_ASCII_TABLES.length;
 				int x = AsciiReverseCodec.ASCII_LOOKUP_HASHS.get(pi).get(
 						Integer.valueOf(d));
 				numstr.setCharAt(i, ((char) x));
